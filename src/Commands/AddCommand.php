@@ -26,6 +26,8 @@ class AddCommand extends Command
             $this->getCommandPassiveVerb()
         );
         $this->description = sprintf('%s all given Numbers', ucfirst($commandVerb));
+
+        parent::__construct($this);
     }
 
     protected function getCommandVerb(): string
@@ -40,7 +42,7 @@ class AddCommand extends Command
 
     public function handle(): void
     {
-        $numbers = $this->getInput();
+        $numbers = $this->removeString($this->getInput());
         $description = $this->generateCalculationDescription($numbers);
         $result = $this->calculateAll($numbers);
 
@@ -63,6 +65,18 @@ class AddCommand extends Command
     protected function getOperator(): string
     {
         return '+';
+    }
+
+    protected function removeString($input): array
+    {
+        $numbers = $input;
+        foreach ($numbers as $key => $value) {
+            if (ctype_alpha($value)) {
+                unset($numbers[$key]);
+            }
+        }
+
+        return $numbers;
     }
 
     /**
